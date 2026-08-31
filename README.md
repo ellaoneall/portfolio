@@ -4,11 +4,11 @@ This site was built with ChatISA's Portfolio Builder and is published with GitHu
 
 ## What I changed
 
-Rewrote the headline and About section to better reflect my Business Analytics background, internship experience, and professional goals after graduation.
+Rewrote the headline by adding "Senior" and About section to better reflect my Business Analytics background, internship experience, and professional goals after graduation.
 
-Updated the coursework section to accurately describe the skills and experience I have gained through my Business Analytics courses.
+Updated the coursework section to accurately describe the skills and experience I have gained through my Business Analytics courses and removed any skills I felt I couldn't defend.
 
-Reviewed and updated the skills section to better represent the technical, analytical, and professional skill I can confidently discuss in an interview setting.
+Reviewed and updated the skills section to better represent the technical, analytical, and professional skills I can confidently discuss in an interview setting.
 
 Added my email, GitHub, and LinkedIn information to make it easier to connect with me.
 
