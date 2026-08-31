@@ -1,0 +1,78 @@
+---
+title: "Homework 1"
+author: "Ella O'Neall"
+date: "2026-02-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(titanic)
+data("titanic_train")
+```
+
+# Question 1
+```{r}
+head(titanic_train, 6)
+```
+
+# Question 2
+```{r}
+nrow(titanic_train)
+ncol(titanic_train)
+```
+
+# Question 3
+```{r}
+mean(titanic_train$Age, na.rm = TRUE)
+median(titanic_train$Age, na.rm = TRUE)
+var(titanic_train$Age, na.rm = TRUE)
+```
+
+# Question 4
+```{r}
+table(titanic_train$Survived)
+```
+
+# Question 5
+```{r}
+table(titanic_train$Survived, titanic_train$Sex)
+```
+
+# Question 6
+```{r}
+hist(titanic_train$Fare,
+     breaks = 10,
+     main = "Histogram of Ticket Price",
+     xlab = "Ticket Price",
+     col = "pink")
+```
+
+# Question 7
+```{r}
+boxplot(
+  Fare~Pclass,
+  data = titanic_train,
+  main = "Passanger Fare by Class",
+  xlab = "Passanger Class",
+  ylab = "Fare Paid",
+  col = c("blue", "green", "pink"))
+```
+
+# Question 8 
+```{r}
+"The higher passenger class you are in the higher the fare the passenger paid. The lower the passenger class the lower the fare that the passenger paid."
+```
+
+# Question 9
+```{r}
+Pclass1 <- subset(titanic_train, Pclass == 1)
+t.test(Pclass1$Fare, conf.level=0.95)
+Pclass3 <- subset(titanic_train, Pclass == 3)
+t.test(Pclass3$Fare, conf.level=0.95)
+```

@@ -1,0 +1,138 @@
+---
+title: "Homework 4"
+author: "Ella O'Neall"
+date: "2026-04-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# read data
+```{r}
+data <- read.csv("FLAG2.csv")
+head(data)
+```
+
+# Question 1:
+Read in the data and determine which variables are quantitative and which are categorical variables.  Make sure the categorical variables are coded as factors.  Print the structure of your data using the str() function.
+```{r}
+str(data)
+
+data$STATUS <- factor(data$STATUS, labels=c("comp", "fixed"))
+data$DISTRICT <- factor(data$DISTRICT, labels=c("1","2","3","4","5"))
+# OR
+# data$DISTRICT <- factor(data$DISTRICT)
+# OR
+# data$DISTRICT <- as.factor(data$DISTRICT)
+data$SUBCONT <- factor(data$SUBCONT, labels=c("no", "yes"))
+
+str(data)
+```
+
+# Question 2:
+Construct a 2x5 table containing the counts of the contracts with the rows containing the STATUS and column containing the DISTRICT.
+
+```{r}
+table(data$STATUS, data$DISTRICT) # contingency table
+```
+
+# Question 3:
+We are interested in understanding how the STATUS and the DISTRICT affect the lowest bid price (LOWBID). Can we estimate an interaction effect between STATUS and DISTRICT?
+
+# chat response
+We cannot estimate the full interaction effect between STATUS and DISTRICT because the contingency table shows that at least one missing combination of the 2 categorical variables. Since there are no observations for that group, R does not have enough information to estimate all interaction terms. 
+
+# prof response
+We cannot estimate an interaction term between STATUS and DISTRICT because there are some cases that we did not observe in the data. Specifically, there are no cases of fixed contracts in district 2, 3, and 4. Thus, an interaction term cannot be estimated. 
+
+
+# Question 4:
+Construct a 2x2 table containing the counts of the contracts with the rows containing the STATUS and the columns containing the SUBCONT. 
+
+```{r}
+table(data$STATUS, data$SUBCONT)
+```
+
+# Question 5:
+We are interested in understanding how the STATUS and the SUBCONT affect the lowest bid price (LOWBID). Can we estimate an interaction effect between STATUS and SUBCONT?
+
+Technically, we can estimate an interaction between STATUS and SUBCONT because we have all cases observed. However, it is worth noting that we have a very low cell count in the "yes"/"fixed" combination, which means that our estimation here is subject to a very small sample size. It would probably not be prudent to estimate an interaction term. 
+
+
+# Question 6:
+Plot a histogram of LOWBID. Notice it is very right skewed. Create a variable in your dataset that is the natural log of LOWBID.
+Here is some example code to do this:
+data$lnLOWBID <- log(data$LOWBID)
+Plot a histogram of the transformed variable.
+
+```{r}
+hist(data$LOWBID)
+
+data$lnLOWBID <- log(data$LOWBID)
+hist(data$lnLOWBID)
+```
+
+# Question 7:
+Create a model to estimate lnLOWBID that contains all of the main effects in the dataset except for DOTEST.
+
+```{r}
+f <- formula(lnLOWBID~.-DOTEST-LOWBID)
+reg.bid <- lm(f, data=data)
+summary(reg.bid)
+
+```
+
+# Question 8:
+Interpret the coefficient for SUBCONT in the language of the problem. (remember you have used a log transformation on the data).
+
+Reverting to the original analysis. The coefficient for SUBCONTyes is 0.479. For comparable contracts (all other levels of the other variables equal), contracts that use a subcontractor have a predicted lnLOWBID price of 0.479 units higher than those that do not use a subcontractor. 
+
+Alternate explanation:
+For comparable contracts (all other levels of the other variables equal), using a subcontractor is associated with a 61% increase predicted LowBid. the 61% comes from exp(0.479)= 1.614459 and 1.614459-1=0.614456.
+
+
+# Question 9:
+Interpret the coefficient for DAYSEST in the language of the problem. (remember you have used a log transformation on the data).
+
+The coefficient for DAYSEST is 0.0057698. For comparable contracts (all other levels of the other variables equal), an additional day estimated length on the contract is associated with an increase in the lnLOWBID of 0.0057698 units. 
+
+Alternate Explanation:
+For comparable contracts(all other levels of the other variables equal), a one day increase in estimated length is associated with a 0.6% increase Predicted LowBid. The 0.6% comes from exp(0.0057698) = 1.00578 and 1.005786 - 1 = 0.005786.
+
+# Question 10:
+Upload the qqnorm plot of the residuals.
+Upload the plot of the residuals vs. the fitted values.
+
+```{r}
+plot(reg.bid, 1) # residual vs fitted plot for my regression
+
+plot(reg.bid, 2) # qqnorm plot with the qqline
+```
+
+The normal qq plot indicates minor departures from normality in the lower tails of the distribution. The residual vs. fitted plots look fine ( there may be some curvature).
+
+# Question 11:
+Create a model to estimate lnLOWBID that contains all of the main effects in the dataset except for DOTEST. Also include an interaction term between DISTRICT and RDLNGTH.
+
+```{r}
+f2 <- formula(lnLOWBID~.-DOTEST-LOWBID + DISTRICT:RDLNGTH)
+
+reg.bid2 <- lm(f2, data=data)
+summary(reg.bid2)
+```
+# Question 12:
+Write out the regression equation for District 1 and for District 5 to see how the two equations differ.
+
+Letting all dummy values of District = 0, we have the District 1 equation as follows.
+
+Equation for District 1:
+lnLOWBID = 10.877+0.545(LBERATIO)+0.463(STATUS1)+0.029(NUMBIDS)+0.006(DAYSEST)+0.015(RDLNGTH)+0.205(PCTASPH)−0.422(PCTBASE)+1.175(PCTEXCAV)−3.015(PCTMOBIL)+0.486(PCTSTRUC)−2.545(PCTTRAFF)+0.448(SUBCONT1)
+
+Letting District 5 dummy equal 1, we have the following equation.
+
+Equation for District 5:
+lnLOWBID = 10.548+0.545(LBERATIO)+0.463(STATUS1)+0.029(NUMBIDS)+0.006(DAYSEST)+0.074(RDLNGTH)+0.205(PCTASPH)−0.422(PCTBASE)+1.175(PCTEXCAV)−3.015(PCTMOBIL)+0.486(PCTSTRUC)−2.545(PCTTRAFF)+0.448(SUBCONT1)
+
+The two equations (District 1 and 5) differ by the coefficient for the main effect for District 5, which changes the intercept, and the interaction effect between District 5 and RDLNGTH, which changes the slope of the relationship between RDLNGTH and lnLOWBID. Otherwise, the two equations are the same. 
